@@ -78,23 +78,25 @@ public class RedisClient {
      * @return
      */
     public List<String> mget(List<String> keys) {
-        List<String> result = (List<String>) this.redisTemplate.execute(new RedisCallback<List<String>>() {
-            @Override
-            public List<String> doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = RedisClient.this.redisTemplate.getStringSerializer();
-                List<byte[]> bytes = new ArrayList<>();
-                for (int i = 0, size = keys.size(); i < size; i++) {
-                    bytes.add(serializer.serialize(keys.get(i)));
-                }
-                List<byte[]> values = connection.mGet(bytes.toArray(new byte[keys.size()][]));
-                List<String> valueList = new ArrayList<>();
-                for (byte[] value : values) {
-                    valueList.add(serializer.deserialize(value));
-                }
-                return valueList;
-            }
-        });
-        return result;
+//        List<String> result = (List<String>) this.redisTemplate.execute(new RedisCallback<List<String>>() {
+//            @Override
+//            public List<String> doInRedis(RedisConnection connection) throws DataAccessException {
+//                RedisSerializer<String> serializer = RedisClient.this.redisTemplate.getStringSerializer();
+//                List<byte[]> bytes = new ArrayList<>();
+//                for (int i = 0, size = keys.size(); i < size; i++) {
+//                    bytes.add(serializer.serialize(keys.get(i)));
+//                }
+//                List<byte[]> values = connection.mGet(bytes.toArray(new byte[keys.size()][]));
+//                List<String> valueList = new ArrayList<>();
+//                for (byte[] value : values) {
+//                    valueList.add(serializer.deserialize(value));
+//                }
+//                return valueList;
+//            }
+//        });
+//        return result;
+
+        return ((List<String>) redisTemplate.opsForValue().multiGet(keys));
     }
 //    public boolean deleteByPrex(final String prex) {
 //        boolean result = (Boolean)this.redisTemplate.execute(new RedisCallback<Boolean>() {
