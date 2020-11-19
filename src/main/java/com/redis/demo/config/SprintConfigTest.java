@@ -32,7 +32,9 @@ public class SprintConfigTest {
 
         String value1 = redisClient.get("key1");
 
-        LOGGER.info(JSON.toJSONString(list));
+        List<Object> objects = redisClient.batchGet(Arrays.asList("key1", "key2"));
+
+        LOGGER.info(JSON.toJSONString(objects));
 //        System.out.println(list);
     }
 }

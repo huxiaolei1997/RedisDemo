@@ -8,7 +8,6 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +27,7 @@ public class RedisClient {
     }
 
     public boolean set(final String key, final String value, final long expire) {
-        boolean result = (Boolean) this.redisTemplate.execute(new RedisCallback<Boolean>() {
+        boolean result = this.redisTemplate.execute(new RedisCallback<Boolean>() {
             @Override
             public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
                 RedisSerializer<String> serializer = RedisClient.this.redisTemplate.getStringSerializer();
@@ -40,12 +39,12 @@ public class RedisClient {
     }
 
     public String get(final String key) {
-        String result = (String) this.redisTemplate.execute(new RedisCallback<String>() {
+        String result = this.redisTemplate.execute(new RedisCallback<String>() {
             @Override
             public String doInRedis(RedisConnection connection) throws DataAccessException {
                 RedisSerializer<String> serializer = RedisClient.this.redisTemplate.getStringSerializer();
                 byte[] value = connection.get(serializer.serialize(key));
-                return (String) serializer.deserialize(value);
+                return serializer.deserialize(value);
             }
         });
         return result;
@@ -59,7 +58,7 @@ public class RedisClient {
     }
 
     public boolean delete(final String key) {
-        boolean result = (Boolean) this.redisTemplate.execute(new RedisCallback<Boolean>() {
+        boolean result = this.redisTemplate.execute(new RedisCallback<Boolean>() {
             @Override
             public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
                 RedisSerializer<String> serializer = RedisClient.this.redisTemplate.getStringSerializer();
@@ -97,6 +96,29 @@ public class RedisClient {
 //        return result;
 
         return ((List<String>) redisTemplate.opsForValue().multiGet(keys));
+    }
+
+    /**
+     * 批量查询 管道 pipeline
+     *
+     * @return
+     */
+    public List<Object> batchGet(List<String> keys) {
+
+//		nginx -> keepalive
+//		redis -> pipeline
+
+        List<Object> result = redisTemplate.executePipelined((RedisCallback<String>) connection -> {
+            RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
+            for (String key : keys) {
+                connection.get(serializer.serialize(key));
+//                    String value = serializer.deserialize(bytes);
+//                    values.add(value);
+            }
+
+            return null;
+        });
+        return result;
     }
 //    public boolean deleteByPrex(final String prex) {
 //        boolean result = (Boolean)this.redisTemplate.execute(new RedisCallback<Boolean>() {
