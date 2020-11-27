@@ -1,9 +1,12 @@
 package com.redis.demo.test;
 
-import com.redis.demo.config.RedisConfigBean;
 import com.redis.demo.config.SpringConfig;
+import org.redisson.api.RScript;
+import org.redisson.api.RedissonClient;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import java.util.Collections;
 
 /**
  * 用途描述
@@ -17,8 +20,28 @@ public class SprintConfigTest {
     public static void main(String[] args) {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class);
 
-        RedisConfigBean redisConfigBean = ((RedisConfigBean) applicationContext.getBean("redisConfigBean"));
+//        RedisConfigBean redisConfigBean = ((RedisConfigBean) applicationContext.getBean("redisConfigBean"));
 
-        System.out.println(redisConfigBean.getHostName());
+        RedissonClient redissonClient = ((RedissonClient) applicationContext.getBean("redissonClient"));
+
+//        Long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, "if redis.call('get', KEYS[1]) == ARGV[1] " +
+//                "then " +
+//                "  return redis.call('del', KEYS[1]) " +
+//                "else " +
+//                "  return 0 " +
+//                "end ", RScript.ReturnType.INTEGER, Collections.singletonList("foo"), "bar");
+
+        Long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, "if redis.call('get', KEYS[1]) == ARGV[1] " +
+                "  then " +
+                "    return redis.call('del', KEYS[1]) " +
+                "  else " +
+                "    return 0 " +
+                "end", RScript.ReturnType.INTEGER, Collections.singletonList("foo"), "bar");
+
+        if (result == 1) {
+//            return true;
+        }
+//        return false;
+//        System.out.println(redisConfigBean.getHostName());
     }
 }
