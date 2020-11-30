@@ -61,7 +61,10 @@ public class BloomFilterTest {
             bloomFilter.add("测试bloomFilter" + i);
         }
 
+        bloomFilter.add("10086");
         System.out.println("测试bloomFilter 1是否存在："+bloomFilter.contains("测试bloomFilter" + 1));
+        System.out.println("测试 10086 是否存在："+bloomFilter.contains("10086"));
+        System.out.println("测试 10087 是否存在："+bloomFilter.contains("10087"));
         System.out.println("海贼王是否存在："+bloomFilter.contains("海贼王"));
         System.out.println("预计插入数量："+bloomFilter.getExpectedInsertions());
         System.out.println("容错率："+bloomFilter.getFalseProbability());
