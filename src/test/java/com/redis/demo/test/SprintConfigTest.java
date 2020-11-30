@@ -17,6 +17,7 @@ import java.util.Collections;
  */
 public class SprintConfigTest {
 
+
     public static void main(String[] args) {
         ApplicationContext applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class);
 
@@ -42,6 +43,9 @@ public class SprintConfigTest {
         if (result == 1) {
 //            return true;
         }
+
+
+
 //        return false;
 //        System.out.println(redisConfigBean.getHostName());
     }

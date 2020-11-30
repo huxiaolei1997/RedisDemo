@@ -25,7 +25,7 @@ public class RedissonConfig {
         String redisProtocol = "redis://";
         Config config = new Config();
         config.useSingleServer()
-                .setPassword("123456")
+//                .setPassword("123456")
                 .setAddress(redisProtocol + serverHost)
                 .setRetryAttempts(300).setRetryInterval(2000)
                 .setDatabase(dbIndex);
