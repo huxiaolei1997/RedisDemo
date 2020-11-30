@@ -31,6 +31,7 @@ public class SprintConfigTest {
 //                "  return 0 " +
 //                "end ", RScript.ReturnType.INTEGER, Collections.singletonList("foo"), "bar");
 
+        // 使用redisson需要注意序列化方式，redisson默认的是jackson序列化方式，如果使用jackson对string进行序列化，存在redis里面会变成 "string"，前后多个两个双引号
         Long result = redissonClient.getScript().eval(RScript.Mode.READ_WRITE, "if redis.call('get', KEYS[1]) == ARGV[1] " +
                 "  then " +
                 "    return redis.call('del', KEYS[1]) " +
