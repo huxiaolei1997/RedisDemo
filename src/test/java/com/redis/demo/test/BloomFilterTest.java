@@ -1,5 +1,6 @@
 package com.redis.demo.test;
 
+import com.google.common.base.Charsets;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
 import com.redis.demo.config.SpringConfig;
@@ -32,6 +33,8 @@ public class BloomFilterTest {
 
     private static final BloomFilter<Integer> bloomFilter = BloomFilter.create(Funnels.integerFunnel(), size, fpp);
 
+    private static final BloomFilter<String> bloomFilterString = BloomFilter.create(Funnels.stringFunnel(Charsets.UTF_8), size, fpp);
+
     public static void main(String[] args) {
 
         for (int i = 0; i < 1000000; i++) {
@@ -41,6 +44,18 @@ public class BloomFilterTest {
         int count = 0;
         for (int i = 1000000; i < 2000000; i++) {
             if (bloomFilter.mightContain(i)) {
+                count++;
+            }
+        }
+        System.out.println("总共的误判数：" + count);
+
+        for (int i = 0; i < 1000000; i++) {
+            bloomFilterString.put(i + "");
+        }
+
+       count = 0;
+        for (int i = 1000000; i < 2000000; i++) {
+            if (bloomFilterString.mightContain(i + "")) {
                 count++;
             }
         }
